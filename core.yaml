@@ -1,0 +1,29 @@
+peer:
+  id: cli
+  address: peer0.heraklion.crete.com:7051
+  localMspId: HeraklionMSP
+  mspConfigPath: /etc/hyperledger/fabric/crypto-config/peerOrganizations/heraklion.crete.com/users/Admin@heraklion.crete.com/msp
+  tls:
+    cert:
+      file: /etc/hyperledger/fabric/tls/server.crt
+    key:
+      file: /etc/hyperledger/fabric/tls/server.key
+    rootcert:
+      file: /etc/hyperledger/fabric/tls/ca.crt
+
+metrics:
+  provider: prometheus
+  statsd:
+    network: udp
+    address: 127.0.0.1:8125
+    writeInterval: 10s
+    prefix: peer
+
+# BCCSP Configuration
+BCCSP:
+  Default: SW
+  SW:
+    Hash: SHA256
+    Security: 256
+    FileKeyStore:
+      KeyStore: /etc/hyperledger/fabric/msp/keystore

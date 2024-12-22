@@ -2,7 +2,7 @@ Organizations:
   - &HeraklionMSP
     Name: HeraklionMSP
     ID: HeraklionMSP
-    MSPDir: ../crypto-config/peerOrganizations/heraklion.crete.com/msp
+    MSPDir: crypto-config/peerOrganizations/heraklion.crete.com/msp
     Policies:
       Readers:
         Type: Signature
@@ -17,7 +17,7 @@ Organizations:
   - &ChaniaMSP
     Name: ChaniaMSP
     ID: ChaniaMSP
-    MSPDir: ../crypto-config/peerOrganizations/chania.crete.com/msp
+    MSPDir: crypto-config/peerOrganizations/chania.crete.com/msp
     Policies:
       Readers:
         Type: Signature
@@ -32,7 +32,7 @@ Organizations:
   - &RethymnoMSP
     Name: RethymnoMSP
     ID: RethymnoMSP
-    MSPDir: ../crypto-config/peerOrganizations/rethymno.crete.com/msp
+    MSPDir: crypto-config/peerOrganizations/rethymno.crete.com/msp
     Policies:
       Readers:
         Type: Signature
@@ -47,7 +47,7 @@ Organizations:
   - &LasithiMSP
     Name: LasithiMSP
     ID: LasithiMSP
-    MSPDir: ../crypto-config/peerOrganizations/lasithi.crete.com/msp
+    MSPDir: crypto-config/peerOrganizations/lasithi.crete.com/msp
     Policies:
       Readers:
         Type: Signature
@@ -62,7 +62,7 @@ Organizations:
   - &OrdererMSP
     Name: OrdererMSP
     ID: OrdererMSP
-    MSPDir: ../crypto-config/ordererOrganizations/crete.com/msp
+    MSPDir: crypto-config/ordererOrganizations/crete.com/msp
     Policies:
       Readers:
         Type: Signature
@@ -110,8 +110,8 @@ Orderer: &OrdererDefaults
     Consenters:
       - Host: orderer.crete.com
         Port: 7050
-        ClientTLSCert: ../crypto-config/ordererOrganizations/crete.com/orderers/orderer.crete.com/tls/server.crt
-        ServerTLSCert: ../crypto-config/ordererOrganizations/crete.com/orderers/orderer.crete.com/tls/server.crt
+        ClientTLSCert: crypto-config/ordererOrganizations/crete.com/orderers/orderer.crete.com/tls/server.crt
+        ServerTLSCert: crypto-config/ordererOrganizations/crete.com/orderers/orderer.crete.com/tls/server.crt
   Capabilities:
     <<: *OrdererCapabilities
   Policies:
