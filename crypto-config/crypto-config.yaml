@@ -1,0 +1,39 @@
+OrdererOrgs:
+  - Name: OrdererMSP
+    Domain: crete.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: orderer
+
+PeerOrgs:
+  - Name: HeraklionMSP
+    Domain: heraklion.crete.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+
+  - Name: ChaniaMSP
+    Domain: chania.crete.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+
+  - Name: RethymnoMSP
+    Domain: rethymno.crete.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+
+  - Name: LasithiMSP
+    Domain: lasithi.crete.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+    Users:
+      Count: 1

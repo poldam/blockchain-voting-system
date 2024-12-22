@@ -1,0 +1,118 @@
+version: '3.7'
+
+networks:
+  crete-network:
+
+services:
+
+  # Orderer
+  orderer.crete.com:
+    container_name: orderer.crete.com
+    image: hyperledger/fabric-orderer:2.4
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=INFO
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=7050
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+      - ./crypto-config/ordererOrganizations/crete.com/orderers/orderer.crete.com:/var/hyperledger/orderer
+      - ./channel-artifacts:/var/hyperledger/channel-artifacts
+    ports:
+      - "7050:7050"
+    networks:
+      - crete-network
+
+  # Peer for Heraklion
+  peer0.heraklion.crete.com:
+    container_name: peer0.heraklion.crete.com
+    image: hyperledger/fabric-peer:2.4
+    environment:
+      - CORE_PEER_ID=peer0.heraklion.crete.com
+      - CORE_PEER_ADDRESS=peer0.heraklion.crete.com:7051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.heraklion.crete.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.heraklion.crete.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.heraklion.crete.com:7051
+      - CORE_PEER_LOCALMSPID=HeraklionMSP
+      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/msp
+    volumes:
+      - ./crypto-config/peerOrganizations/heraklion.crete.com/peers/peer0.heraklion.crete.com:/var/hyperledger/msp
+      - ./channel-artifacts:/var/hyperledger/channel-artifacts
+    ports:
+      - "7051:7051"
+      - "7052:7052"
+    networks:
+      - crete-network
+
+  # Peer for Chania
+  peer0.chania.crete.com:
+    container_name: peer0.chania.crete.com
+    image: hyperledger/fabric-peer:2.4
+    environment:
+      - CORE_PEER_ID=peer0.chania.crete.com
+      - CORE_PEER_ADDRESS=peer0.chania.crete.com:8051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.chania.crete.com:8052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.chania.crete.com:8051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.chania.crete.com:8051
+      - CORE_PEER_LOCALMSPID=ChaniaMSP
+      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/msp
+    volumes:
+      - ./crypto-config/peerOrganizations/chania.crete.com/peers/peer0.chania.crete.com:/var/hyperledger/msp
+      - ./channel-artifacts:/var/hyperledger/channel-artifacts
+    ports:
+      - "8051:8051"
+      - "8052:8052"
+    networks:
+      - crete-network
+
+  # Peer for Rethymno
+  peer0.rethymno.crete.com:
+    container_name: peer0.rethymno.crete.com
+    image: hyperledger/fabric-peer:2.4
+    environment:
+      - CORE_PEER_ID=peer0.rethymno.crete.com
+      - CORE_PEER_ADDRESS=peer0.rethymno.crete.com:9051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.rethymno.crete.com:9052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.rethymno.crete.com:9051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.rethymno.crete.com:9051
+      - CORE_PEER_LOCALMSPID=RethymnoMSP
+      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/msp
+    volumes:
+      - ./crypto-config/peerOrganizations/rethymno.crete.com/peers/peer0.rethymno.crete.com:/var/hyperledger/msp
+      - ./channel-artifacts:/var/hyperledger/channel-artifacts
+    ports:
+      - "9051:9051"
+      - "9052:9052"
+    networks:
+      - crete-network
+
+  # Peer for Lasithi
+  peer0.lasithi.crete.com:
+    container_name: peer0.lasithi.crete.com
+    image: hyperledger/fabric-peer:2.4
+    environment:
+      - CORE_PEER_ID=peer0.lasithi.crete.com
+      - CORE_PEER_ADDRESS=peer0.lasithi.crete.com:10051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:10051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.lasithi.crete.com:10052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:10052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.lasithi.crete.com:10051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.lasithi.crete.com:10051
+      - CORE_PEER_LOCALMSPID=LasithiMSP
+      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/msp
+    volumes:
+      - ./crypto-config/peerOrganizations/lasithi.crete.com/peers/peer0.lasithi.crete.com:/var/hyperledger/msp
+      - ./channel-artifacts:/var/hyperledger/channel-artifacts
+    ports:
+      - "10051:10051"
+      - "10052:10052"
+    networks:
+      - crete-network

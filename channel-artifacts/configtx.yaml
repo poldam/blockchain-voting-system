@@ -1,0 +1,175 @@
+Organizations:
+  - &HeraklionMSP
+    Name: HeraklionMSP
+    ID: HeraklionMSP
+    MSPDir: ../crypto-config/peerOrganizations/heraklion.crete.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('HeraklionMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('HeraklionMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('HeraklionMSP.admin')"
+
+  - &ChaniaMSP
+    Name: ChaniaMSP
+    ID: ChaniaMSP
+    MSPDir: ../crypto-config/peerOrganizations/chania.crete.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('ChaniaMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('ChaniaMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('ChaniaMSP.admin')"
+
+  - &RethymnoMSP
+    Name: RethymnoMSP
+    ID: RethymnoMSP
+    MSPDir: ../crypto-config/peerOrganizations/rethymno.crete.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('RethymnoMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('RethymnoMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('RethymnoMSP.admin')"
+
+  - &LasithiMSP
+    Name: LasithiMSP
+    ID: LasithiMSP
+    MSPDir: ../crypto-config/peerOrganizations/lasithi.crete.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('LasithiMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('LasithiMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('LasithiMSP.admin')"
+
+  - &OrdererMSP
+    Name: OrdererMSP
+    ID: OrdererMSP
+    MSPDir: ../crypto-config/ordererOrganizations/crete.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('OrdererMSP.admin')"
+
+Capabilities:
+  Channel: &ChannelCapabilities
+    V2_0: true
+  Orderer: &OrdererCapabilities
+    V2_0: true
+  Application: &ApplicationCapabilities
+    V2_0: true
+
+Application: &ApplicationDefaults
+  Capabilities:
+    <<: *ApplicationCapabilities
+  Organizations:
+  Policies:
+    Readers:
+      Type: Signature
+      Rule: "OR('HeraklionMSP.member', 'ChaniaMSP.member', 'RethymnoMSP.member', 'LasithiMSP.member')"
+    Writers:
+      Type: Signature
+      Rule: "OR('HeraklionMSP.member', 'ChaniaMSP.member', 'RethymnoMSP.member', 'LasithiMSP.member')"
+    Admins:
+      Type: Signature
+      Rule: "OR('HeraklionMSP.admin', 'ChaniaMSP.admin', 'RethymnoMSP.admin', 'LasithiMSP.admin')"
+
+Orderer: &OrdererDefaults
+  OrdererType: etcdraft
+  Addresses:
+    - orderer.crete.com:7050
+  BatchTimeout: 2s
+  BatchSize:
+    MaxMessageCount: 10
+    AbsoluteMaxBytes: 99 MB
+    PreferredMaxBytes: 512 KB
+  EtcdRaft:
+    Consenters:
+      - Host: orderer.crete.com
+        Port: 7050
+        ClientTLSCert: ../crypto-config/ordererOrganizations/crete.com/orderers/orderer.crete.com/tls/server.crt
+        ServerTLSCert: ../crypto-config/ordererOrganizations/crete.com/orderers/orderer.crete.com/tls/server.crt
+  Capabilities:
+    <<: *OrdererCapabilities
+  Policies:
+    Readers:
+      Type: Signature
+      Rule: "OR('OrdererMSP.member')"
+    Writers:
+      Type: Signature
+      Rule: "OR('OrdererMSP.member')"
+    Admins:
+      Type: Signature
+      Rule: "OR('OrdererMSP.admin')"
+    BlockValidation:
+      Type: Signature
+      Rule: "OR('OrdererMSP.member')"
+
+Profiles:
+  CreteGenesis:
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations:
+        - *OrdererMSP
+    Capabilities:
+      <<: *ChannelCapabilities
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('OrdererMSP.admin')"
+    Consortiums:
+      CreteConsortium:
+        Organizations:
+          - *HeraklionMSP
+          - *ChaniaMSP
+          - *RethymnoMSP
+          - *LasithiMSP
+
+  CreteChannel:
+    Consortium: CreteConsortium
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *HeraklionMSP
+        - *ChaniaMSP
+        - *RethymnoMSP
+        - *LasithiMSP
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('HeraklionMSP.member', 'ChaniaMSP.member', 'RethymnoMSP.member', 'LasithiMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('HeraklionMSP.member', 'ChaniaMSP.member', 'RethymnoMSP.member', 'LasithiMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('HeraklionMSP.admin', 'ChaniaMSP.admin', 'RethymnoMSP.admin', 'LasithiMSP.admin')"

@@ -1,0 +1,27 @@
+Organizations:
+  - &HeraklionMSP
+    Name: HeraklionMSP
+    ID: HeraklionMSP
+    MSPDir: crypto-config/peerOrganizations/heraklion.crete.com/msp
+  - &ChaniaMSP
+    Name: ChaniaMSP
+    ID: ChaniaMSP
+    MSPDir: crypto-config/peerOrganizations/chania.crete.com/msp
+  - &RethymnoMSP
+    Name: RethymnoMSP
+    ID: RethymnoMSP
+    MSPDir: crypto-config/peerOrganizations/rethymno.crete.com/msp
+  - &LasithiMSP
+    Name: LasithiMSP
+    ID: LasithiMSP
+    MSPDir: crypto-config/peerOrganizations/lasithi.crete.com/msp
+
+Profiles:
+  CreteChannel:
+    Consortium: CreteConsortium
+    Application:
+      Organizations:
+        - *HeraklionMSP
+        - *ChaniaMSP
+        - *RethymnoMSP
+        - *LasithiMSP
