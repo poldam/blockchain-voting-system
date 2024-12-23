@@ -16,6 +16,12 @@ rm -rf ./channel-artifacts/
 echo "Generating crypto materials..."
 cryptogen generate --config=./crypto-config.yaml --output=./crypto-config
 
+cp crypto-config/peerOrganizations/heraklion.crete.com/users/Admin@heraklion.crete.com/msp/signcerts/Admin@heraklion.crete.com-cert.pem  crypto-config/peerOrganizations/heraklion.crete.com/msp/admincerts/
+cp crypto-config/peerOrganizations/chania.crete.com/users/Admin@chania.crete.com/msp/signcerts/Admin@chania.crete.com-cert.pem crypto-config/peerOrganizations/chania.crete.com/msp/admincerts/
+cp crypto-config/peerOrganizations/rethymno.crete.com/users/Admin@rethymno.crete.com/msp/signcerts/Admin@rethymno.crete.com-cert.pem crypto-config/peerOrganizations/rethymno.crete.com/msp/admincerts/
+cp crypto-config/peerOrganizations/lasithi.crete.com/users/Admin@lasithi.crete.com/msp/signcerts/Admin@lasithi.crete.com-cert.pem crypto-config/peerOrganizations/lasithi.crete.com/msp/admincerts/
+cp crypto-config/ordererOrganizations/crete.com/users/Admin@crete.com/msp/signcerts/Admin@crete.com-cert.pem crypto-config/ordererOrganizations/crete.com/msp/admincerts/
+
 # Step 2: Generate Genesis Block
 echo "Generating genesis block..."
 configtxgen -profile CreteGenesis -channelID system-channel -outputBlock $CONFIG_PATH/genesis.block -configPath .
@@ -25,18 +31,8 @@ echo "Generating channel configuration transaction..."
 configtxgen -profile CreteChannel -outputCreateChannelTx $CONFIG_PATH/channel.tx -channelID $CHANNEL_NAME -configPath .
 
 # Set proper permissions
-# echo "Adjusting permissions for the current user..."
-# sudo chown -R $(id -u):$(id -g) .
-# find . -type d -exec chmod 755 {} \;
-# find . -type f -exec chmod 644 {} \;
-
-# Add current user to docker group (if needed)
-# if ! groups | grep -q '\bdocker\b'; then
-#     echo "Adding user to docker group..."
-#     sudo usermod -aG docker $USER
-#     echo "Please log out and log back in for group changes to take effect."
-#     exit 1
-# fi
+echo "Adjusting permissions for the current user..."
+sudo chmod -R 755 ./crypto-config ./channel-artifacts
 
 # Step 4: Create and Join the Channel
 
