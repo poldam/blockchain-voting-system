@@ -172,4 +172,4 @@ Profiles:
         Rule: "OR('HeraklionMSP.member', 'ChaniaMSP.member', 'RethymnoMSP.member', 'LasithiMSP.member')"
       Admins:
         Type: Signature
-        Rule: "OR('HeraklionMSP.admin', 'ChaniaMSP.admin', 'RethymnoMSP.admin', 'LasithiMSP.admin')"
+        Rule: "OR('HeraklionMSP.admin', 'ChaniaMSP.admin', 'RethymnoMSP.admin', 'LasithiMSP.admin', 'OrdererMSP.admin')"

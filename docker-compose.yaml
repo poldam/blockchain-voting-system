@@ -19,6 +19,7 @@ services:
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
       - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:8443
+      - CORE_PEER_TLS_ENABLED=true
     working_dir: /var/hyperledger/orderer
     command: orderer
     volumes:
@@ -40,6 +41,7 @@ services:
       - CORE_PEER_ADDRESS=peer0.heraklion.crete.com:7051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
       - CORE_PEER_CHAINCODEADDRESS=peer0.heraklion.crete.com:7052
+      - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
       - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/msp/tlscacerts/tlsca.heraklion.crete.com-cert.pem
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.heraklion.crete.com:7051
@@ -51,6 +53,8 @@ services:
     volumes:
       - ./crypto-config/peerOrganizations/heraklion.crete.com/peers/peer0.heraklion.crete.com/msp:/var/hyperledger/msp
       - ./channel-artifacts:/var/hyperledger/channel-artifacts
+      - ./crypto-config/peerOrganizations/heraklion.crete.com/peers/peer0.heraklion.crete.com/tls:/etc/hyperledger/fabric/tls
+
     ports:
       - "7051:7051"
       - "7052:7052"
@@ -66,6 +70,7 @@ services:
       - CORE_PEER_ID=peer0.chania.crete.com
       - CORE_PEER_ADDRESS=peer0.chania.crete.com:8051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
+      - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_CHAINCODEADDRESS=peer0.chania.crete.com:8052
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.chania.crete.com:8051
@@ -78,6 +83,8 @@ services:
     volumes:
       - ./crypto-config/peerOrganizations/chania.crete.com/peers/peer0.chania.crete.com/msp:/var/hyperledger/msp
       - ./channel-artifacts:/var/hyperledger/channel-artifacts
+      - ./crypto-config/peerOrganizations/chania.crete.com/peers/peer0.chania.crete.com/tls:/etc/hyperledger/fabric/tls
+
     ports:
       - "8051:8051"
       - "8052:8052"
@@ -91,6 +98,7 @@ services:
     image: hyperledger/fabric-peer:2.4
     environment:
       - CORE_PEER_ID=peer0.rethymno.crete.com
+      - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_ADDRESS=peer0.rethymno.crete.com:9051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
       - CORE_PEER_CHAINCODEADDRESS=peer0.rethymno.crete.com:9052
@@ -105,6 +113,8 @@ services:
     volumes:
       - ./crypto-config/peerOrganizations/rethymno.crete.com/peers/peer0.rethymno.crete.com/msp:/var/hyperledger/msp
       - ./channel-artifacts:/var/hyperledger/channel-artifacts
+      - ./crypto-config/peerOrganizations/rethymno.crete.com/peers/peer0.rethymno.crete.com/tls:/etc/hyperledger/fabric/tls
+
     ports:
       - "9051:9051"
       - "9052:9052"
@@ -119,6 +129,7 @@ services:
     environment:
       - CORE_PEER_ID=peer0.lasithi.crete.com
       - CORE_PEER_ADDRESS=peer0.lasithi.crete.com:10051
+      - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_LISTENADDRESS=0.0.0.0:10051
       - CORE_PEER_CHAINCODEADDRESS=peer0.lasithi.crete.com:10052
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:10052
@@ -132,41 +143,13 @@ services:
     volumes:
       - ./crypto-config/peerOrganizations/lasithi.crete.com/peers/peer0.lasithi.crete.com/msp:/var/hyperledger/msp
       - ./channel-artifacts:/var/hyperledger/channel-artifacts
+      - ./crypto-config/peerOrganizations/lasithi.crete.com/peers/peer0.lasithi.crete.com/tls:/etc/hyperledger/fabric/tls
+
     ports:
       - "10051:10051"
       - "10052:10052"
     networks:
       - crete-network
-
-  # CLI Container
-  # cli:
-  #   container_name: cli
-  #   hostname: cli
-  #   image: hyperledger/fabric-tools:2.4
-  #   tty: true
-  #   stdin_open: true
-  #   environment:
-  #     - FABRIC_LOGGING_SPEC=DEBUG
-  #     - CORE_PEER_LOCALMSPID=HeraklionMSP
-  #     - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-  #     - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/heraklion.crete.com/users/Admin@heraklion.crete.com/msp
-  #     - CORE_PEER_ADDRESS=peer0.heraklion.crete.com:7051
-  #     - FABRIC_CFG_PATH=/etc/hyperledger/fabric
-  #   working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
-  #   command: /bin/bash
-  #   volumes:
-  #     - ./crypto-config:/etc/hyperledger/fabric/crypto-config
-  #     - ./crypto-config/peerOrganizations/heraklion.crete.com/peers/peer0.heraklion.crete.com/tls:/etc/hyperledger/fabric/tls
-  #     - ./channel-artifacts:/etc/hyperledger/fabric/channel-artifacts
-  #     - ./core.yaml:/etc/hyperledger/fabric/core.yaml
-  #   depends_on:
-  #     - orderer.crete.com
-  #     - peer0.heraklion.crete.com
-  #     - peer0.chania.crete.com
-  #     - peer0.rethymno.crete.com
-  #     - peer0.lasithi.crete.com
-  #   networks:
-  #     - crete-network
 
   cli:
     container_name: cli

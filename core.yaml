@@ -11,13 +11,13 @@ peer:
     rootcert:
       file: /etc/hyperledger/fabric/tls/ca.crt
 
-metrics:
-  provider: prometheus
-  statsd:
-    network: udp
-    address: 127.0.0.1:8125
-    writeInterval: 10s
-    prefix: peer
+# metrics:
+#   provider: prometheus
+#   statsd:
+#     network: udp
+#     address: 127.0.0.1:8125
+#     writeInterval: 10s
+#     prefix: peer
 
 # BCCSP Configuration
 BCCSP:

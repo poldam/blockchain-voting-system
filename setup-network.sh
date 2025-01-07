@@ -44,13 +44,10 @@ docker network create --driver bridge --attachable crete-network
 echo "Starting Docker containers..."
 docker-compose up -d
 
-# echo "Creating Docker network if it does not exist..."
-# docker network inspect crete-network >/dev/null 2>&1 || docker network create --driver bridge --attachable crete-network
-
 echo "Waiting for Docker containers to start..."
 sleep 3
 
-## Attached peers to network
+## Attach peers to network
 docker network connect crete-network orderer.crete.com
 docker network connect crete-network peer0.heraklion.crete.com
 docker network connect crete-network peer0.chania.crete.com
@@ -58,12 +55,24 @@ docker network connect crete-network peer0.rethymno.crete.com
 docker network connect crete-network peer0.lasithi.crete.com
 docker network connect crete-network cli
 
-## CHECK IF peers can be pinged:
-# docker exec -it cli ping orderer.crete.com
-# docker exec -it cli ping peer0.heraklion.crete.com
-# docker exec -it cli ping peer0.chania.crete.com
-# docker exec -it cli ping peer0.rethymno.crete.com
-# docker exec -it cli ping peer0.lasithi.crete.com
+# Step 5: Sign the channel configuration transaction
+## Admins signatures to authorise the channel creation
+echo "Signing channel configuration transaction..."
+docker exec -e CORE_PEER_LOCALMSPID=HeraklionMSP \
+  -e CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/heraklion.crete.com/users/Admin@heraklion.crete.com/msp \
+  cli peer channel signconfigtx -f /etc/hyperledger/fabric/channel-artifacts/channel.tx
+
+docker exec -e CORE_PEER_LOCALMSPID=ChaniaMSP \
+  -e CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/chania.crete.com/users/Admin@chania.crete.com/msp \
+  cli peer channel signconfigtx -f /etc/hyperledger/fabric/channel-artifacts/channel.tx
+
+docker exec -e CORE_PEER_LOCALMSPID=RethymnoMSP \
+  -e CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/rethymno.crete.com/users/Admin@rethymno.crete.com/msp \
+  cli peer channel signconfigtx -f /etc/hyperledger/fabric/channel-artifacts/channel.tx
+
+docker exec -e CORE_PEER_LOCALMSPID=LasithiMSP \
+  -e CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/lasithi.crete.com/users/Admin@lasithi.crete.com/msp \
+  cli peer channel signconfigtx -f /etc/hyperledger/fabric/channel-artifacts/channel.tx
 
 # Create the channel
 echo "Creating the channel..."
@@ -77,7 +86,6 @@ docker exec -e CORE_PEER_LOCALMSPID=OrdererMSP \
   --outputBlock /etc/hyperledger/fabric/channel-artifacts/cretechannel.block \
   --tls --cafile /etc/hyperledger/fabric/crypto-config/ordererOrganizations/crete.com/tlsca/tlsca.crete.com-cert.pem
 
- 
 # Function to join peers to the channel
 join_channel() {
   PEER_NAME=$1
@@ -88,11 +96,12 @@ join_channel() {
   echo "Joining $PEER_NAME to the channel..."
   docker exec -e CORE_PEER_LOCALMSPID=$MSP \
     -e CORE_PEER_ADDRESS=$PEER_NAME.$DOMAIN:$PEER_PORT \
-    -e CORE_PEER_TLS_ROOTCERT_FILE=/crypto-config/peerOrganizations/$DOMAIN/tlsca/tlsca.$DOMAIN-cert.pem \
-    -e CORE_PEER_MSPCONFIGPATH=/crypto-config/peerOrganizations/$DOMAIN/users/Admin@$DOMAIN/msp \
+    -e CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/$DOMAIN/tlsca/tlsca.$DOMAIN-cert.pem \
+    -e CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/$DOMAIN/users/Admin@$DOMAIN/msp \
     cli peer channel join \
-    -b /channel-artifacts/cretechannel.block
+    -b /etc/hyperledger/fabric/channel-artifacts/cretechannel.block
 }
+
 
 # Join all peers to the channel
 join_channel "peer0" 7051 "HeraklionMSP" "heraklion.crete.com"
@@ -101,5 +110,5 @@ join_channel "peer0" 9051 "RethymnoMSP" "rethymno.crete.com"
 join_channel "peer0" 10051 "LasithiMSP" "lasithi.crete.com"
 
 # Verify channel membership
-echo "Verifying channel membership..."
+# echo "Verifying channel membership..."
 docker exec cli peer channel list

@@ -1,0 +1,90 @@
+1. Verify Peer Nodes Joined the Channel
+--------------------------------------------
+docker exec -e CORE_PEER_LOCALMSPID=HeraklionMSP \
+  -e CORE_PEER_ADDRESS=peer0.heraklion.crete.com:7051 \
+  -e CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/heraklion.crete.com/tlsca/tlsca.heraklion.crete.com-cert.pem \
+  -e CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/heraklion.crete.com/users/Admin@heraklion.crete.com/msp \
+  cli peer channel list
+This should list the channel (cretechannel).
+
+2. Inspect the Blockchain State
+--------------------------------------------
+To confirm that the blockchain ledger is operational, check the blockchain height and block details. Run:
+docker exec -e CORE_PEER_LOCALMSPID=HeraklionMSP \
+  -e CORE_PEER_ADDRESS=peer0.heraklion.crete.com:7051 \
+  -e CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/heraklion.crete.com/tlsca/tlsca.heraklion.crete.com-cert.pem \
+  -e CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/heraklion.crete.com/users/Admin@heraklion.crete.com/msp \
+  cli peer channel getinfo -c cretechannel
+
+You should see output indicating the block height and current ledger state.
+
+3. Install and Instantiate a Chaincode
+--------------------------------------------
+Install the Chaincode
+Run the following for each peer:
+docker exec -e CORE_PEER_LOCALMSPID=HeraklionMSP \
+  -e CORE_PEER_ADDRESS=peer0.heraklion.crete.com:7051 \
+  -e CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/heraklion.crete.com/tlsca/tlsca.heraklion.crete.com-cert.pem \
+  -e CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/heraklion.crete.com/users/Admin@heraklion.crete.com/msp \
+  cli peer lifecycle chaincode install basic.tar.gz
+Replace basic.tar.gz with the actual chaincode package.
+
+Approve the Chaincode
+docker exec -e CORE_PEER_LOCALMSPID=HeraklionMSP \
+  -e CORE_PEER_ADDRESS=peer0.heraklion.crete.com:7051 \
+  -e CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/heraklion.crete.com/tlsca/tlsca.heraklion.crete.com-cert.pem \
+  -e CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/heraklion.crete.com/users/Admin@heraklion.crete.com/msp \
+  cli peer lifecycle chaincode approveformyorg \
+    -o orderer.crete.com:7050 \
+    --tls --cafile /etc/hyperledger/fabric/crypto-config/ordererOrganizations/crete.com/tlsca/tlsca.crete.com-cert.pem \
+    --channelID cretechannel \
+    --name basic --version 1.0 \
+    --sequence 1 --package-id PACKAGE_ID
+Replace PACKAGE_ID with the ID from the previous install step.
+
+Commit the Chaincode
+docker exec -e CORE_PEER_LOCALMSPID=HeraklionMSP \
+  -e CORE_PEER_ADDRESS=peer0.heraklion.crete.com:7051 \
+  -e CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/heraklion.crete.com/tlsca/tlsca.heraklion.crete.com-cert.pem \
+  -e CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/heraklion.crete.com/users/Admin@heraklion.crete.com/msp \
+  cli peer lifecycle chaincode commit \
+    -o orderer.crete.com:7050 \
+    --tls --cafile /etc/hyperledger/fabric/crypto-config/ordererOrganizations/crete.com/tlsca/tlsca.crete.com-cert.pem \
+    --channelID cretechannel \
+    --name basic --version 1.0 \
+    --sequence 1
+
+4. Invoke the Chaincode
+--------------------------------------------
+Invoke a chaincode function to test the network:
+
+docker exec -e CORE_PEER_LOCALMSPID=HeraklionMSP \
+  -e CORE_PEER_ADDRESS=peer0.heraklion.crete.com:7051 \
+  -e CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/heraklion.crete.com/tlsca/tlsca.heraklion.crete.com-cert.pem \
+  -e CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/heraklion.crete.com/users/Admin@heraklion.crete.com/msp \
+  cli peer chaincode invoke \
+    -o orderer.crete.com:7050 \
+    --tls --cafile /etc/hyperledger/fabric/crypto-config/ordererOrganizations/crete.com/tlsca/tlsca.crete.com-cert.pem \
+    -C cretechannel -n basic -c '{"Args":["initLedger"]}'
+
+5. Query the Chaincode
+--------------------------------------------
+Query the chaincode to ensure data is being stored and retrieved:
+
+docker exec -e CORE_PEER_LOCALMSPID=HeraklionMSP \
+  -e CORE_PEER_ADDRESS=peer0.heraklion.crete.com:7051 \
+  -e CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/heraklion.crete.com/tlsca/tlsca.heraklion.crete.com-cert.pem \
+  -e CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/heraklion.crete.com/users/Admin@heraklion.crete.com/msp \
+  cli peer chaincode query \
+    -C cretechannel -n basic -c '{"Args":["queryAll"]}'
+
+6. Validate Logs
+--------------------------------------------
+Check the logs of your peers and orderer containers to ensure there are no errors during these operations. Use:
+
+docker logs peer0.heraklion.crete.com
+docker logs orderer.crete.com
+
+7. Verify permissions:
+--------------------------------------------
+configtxgen -inspectChannelCreateTx ./channel-artifacts/channel.tx > channel-config.json
