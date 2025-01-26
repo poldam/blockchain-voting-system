@@ -38,7 +38,11 @@ sudo chmod -R 755 ./crypto-config ./channel-artifacts
 
 echo "Creating Docker network..."
 docker-compose down
-docker network rm crete-network
+# Check if the Docker network exists
+if docker network inspect crete-network &>/dev/null; then
+    echo "Removing existing Docker network: crete-network"
+    docker network rm crete-network
+fi
 docker network create --driver bridge --attachable crete-network
 
 echo "Starting Docker containers..."
