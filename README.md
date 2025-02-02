@@ -13,9 +13,18 @@ This thesis presents the design and implementation of a Blockchain-Based Secure 
    git clone https://github.com/poldam/blockchain-voting-system.git
    cd blockchain-voting-system
 
+## Run node api
+- npm install
+- node api/server.js
+
 ## Run Network
 chmod +x setup-network.sh
 ./setup-network.sh
 
 ## Shut down the network
 docker-compose down
+
+## Deploy Chaincode
+chmod +x deploy_chaincode.sh
+./deploy_chaincode.sh
+

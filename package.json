@@ -1,0 +1,27 @@
+{
+  "name": "blockchain-voting-system",
+  "version": "1.0.0",
+  "description": "This thesis presents the design and implementation of a Blockchain-Based Secure Voting System, leveraging the decentralized, immutable, and transparent nature of blockchain technology to ensure the integrity, security, and confidentiality of voting processes.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/poldam/blockchain-voting-system.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/poldam/blockchain-voting-system/issues"
+  },
+  "homepage": "https://github.com/poldam/blockchain-voting-system#readme",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "fabric-network": "^2.2.20"
+  }
+}
